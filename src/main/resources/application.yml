@@ -1,0 +1,16 @@
+spring:
+  datasource:
+    hikari:
+      connection-timeout: 10000
+    url: jdbc:postgresql://localhost:5432/sprello
+    username: sprello_user
+    password: sprello123
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+  application:
+    name: sprello
+server:
+  servlet:
+    context-path: /sprello
