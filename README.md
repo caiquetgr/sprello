@@ -1,2 +1,2 @@
-TODO:
-- Transformar em aplicação multimódulo
+# sprello
+A simple TODO app created using Spring Boot.
