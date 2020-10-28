@@ -11,6 +11,8 @@ spring:
     show-sql: true
   application:
     name: sprello
+  mvc:
+    locale: br
 server:
   servlet:
     context-path: /sprello
