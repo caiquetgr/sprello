@@ -10,18 +10,20 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
 @RequiredArgsConstructor
+@RequestMapping("/boards")
 @RestController
 public class BoardController {
 
     private final CreateBoardService createBoardService;
     private final BoardControllerMapper boardControllerMapper;
 
-    @PostMapping("/boards")
+    @PostMapping
     public ResponseEntity<CreateBoardResponse> createBoard(@Valid @RequestBody CreateBoardRequest request) {
 
         final Board board = createBoardService.createBoard(boardControllerMapper.createBoardRequestToBoard(request));

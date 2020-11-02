@@ -24,7 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(BoardController.class)
 class BoardControllerTest {
 
-    private static final String BOARD_JSON_FOLDER = JSON_FOLDER + "/board/controller";
+    private static final String BOARD_JSON_FOLDER = JSON_FOLDER + "board/controller";
 
     @Autowired
     private MockMvc mockMvc;
