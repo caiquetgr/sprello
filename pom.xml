@@ -22,6 +22,7 @@
         <fixture-factory.version>3.1.0</fixture-factory.version>
         <commons-collections4.version>4.4</commons-collections4.version>
         <build-helper-maven-plugin.version>3.2.0</build-helper-maven-plugin.version>
+        <testcontainers.version>1.14.3</testcontainers.version>
     </properties>
 
     <!-- Spring -->
@@ -66,6 +67,11 @@
             <scope>runtime</scope>
         </dependency>
 
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
+        </dependency>
+
         <!-- Lombok -->
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -91,6 +97,29 @@
             <groupId>br.com.six2six</groupId>
             <artifactId>fixture-factory</artifactId>
             <version>${fixture-factory.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Testcontainers -->
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>testcontainers</artifactId>
+            <version>${testcontainers.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>${testcontainers.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>${testcontainers.version}</version>
+            <scope>test</scope>
         </dependency>
 
         <!-- Mapstruct -->
@@ -123,6 +152,11 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+
+            <plugin>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-maven-plugin</artifactId>
             </plugin>
 
             <plugin>

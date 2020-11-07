@@ -9,6 +9,10 @@ spring:
     hibernate:
       ddl-auto: none
     show-sql: true
+    properties:
+      hibernate:
+        default-schema: public
+        dialect: org.hibernate.dialect.PostgreSQLDialect
   application:
     name: sprello
   mvc:
