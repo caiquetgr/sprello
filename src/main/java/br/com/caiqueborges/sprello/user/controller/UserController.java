@@ -27,8 +27,9 @@ public class UserController {
 
         final User createdUser = createUserService.createUser(mapper.createUserRequestToUser(createUserRequest));
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
-        
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(mapper.userToCreateUserResponse(createdUser));
+
     }
 
 }

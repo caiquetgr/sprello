@@ -5,8 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Email;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 @Data
 @NoArgsConstructor
@@ -23,7 +23,7 @@ public class CreateUserRequest {
     @NotBlank(message = "{user.email.notblank}")
     private String email;
 
-    @Min(value = 8, message = "{user.password.min}")
+    @Size(min = 8, message = "{user.password.min}")
     @NotBlank(message = "{user.password.notblank}")
     private String password;
 
