@@ -9,3 +9,8 @@ spring:
       hibernate:
         default-schema: public
         dialect: org.hibernate.dialect.PostgreSQLDialect
+
+app:
+  authorization-token:
+    expiration-in-seconds: 600
+    signature-key: dac1231R!@!R!@ACWKDP!K@K124210

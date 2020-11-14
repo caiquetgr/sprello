@@ -1,5 +1,7 @@
 package br.com.caiqueborges.sprello.config.controlleradvice;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -16,10 +18,19 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.stream.Collectors;
 
+import static org.apache.commons.collections4.MapUtils.emptyIfNull;
+import static org.apache.commons.collections4.MapUtils.isNotEmpty;
+import static org.apache.commons.lang3.StringUtils.replaceEachRepeatedly;
+
+@RequiredArgsConstructor
 @ControllerAdvice
 public class ExceptionHandlerControllerAdvice extends ResponseEntityExceptionHandler {
+
+    private final MessageSource messageSource;
 
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
@@ -47,25 +58,6 @@ public class ExceptionHandlerControllerAdvice extends ResponseEntityExceptionHan
         return webRequest.getHttpMethod();
     }
 
-
-    @ExceptionHandler({Exception.class})
-    public ResponseEntity<Object> handleAnyException(Exception ex, WebRequest webRequest) {
-
-        HttpStatus status;
-
-        if (ex.getClass().isAnnotationPresent(ResponseStatus.class)) {
-            status = ex.getClass().getAnnotation(ResponseStatus.class).value();
-        } else {
-            status = HttpStatus.INTERNAL_SERVER_ERROR;
-        }
-
-        ApiError apiError = createApiError((ServletWebRequest) webRequest, status,
-                Collections.singletonList(ex.getLocalizedMessage()));
-
-        return new ResponseEntity<>(apiError, status);
-
-    }
-
     private ApiError createApiError(ServletWebRequest webRequest, HttpStatus status, List<String> errors) {
         return ApiError.builder()
                 .requestedUri(getRequestedUri(webRequest))
@@ -74,6 +66,48 @@ public class ExceptionHandlerControllerAdvice extends ResponseEntityExceptionHan
                 .time(ZonedDateTime.now(ZoneId.of("UTC")))
                 .errors(errors)
                 .build();
+    }
+
+    @ExceptionHandler({BaseException.class})
+    public ResponseEntity<Object> handleAnyException(BaseException ex,
+                                                     WebRequest webRequest,
+                                                     Locale locale) {
+
+        final Class<? extends BaseException> exceptionClass = ex.getClass();
+
+        final HttpStatus status = exceptionClass.isAnnotationPresent(ResponseStatus.class) ?
+                exceptionClass.getAnnotation(ResponseStatus.class).value() :
+                HttpStatus.INTERNAL_SERVER_ERROR;
+
+        String message = getMessage(ex, locale);
+        ApiError apiError = createApiError((ServletWebRequest) webRequest, status, Collections.singletonList(message));
+
+        return new ResponseEntity<>(apiError, status);
+
+    }
+
+    private String getMessage(BaseException ex, Locale locale) {
+
+        String message = messageSource.getMessage(ex.getMessageKey(), null, locale);
+
+        Map<String, Object> messageVariables = emptyIfNull(ex.getMessageVariables());
+
+        if (isNotEmpty(messageVariables)) {
+
+            return replaceEachRepeatedly(
+                    message,
+                    messageVariables.keySet().stream().map(this::addBrackets).toArray(String[]::new),
+                    messageVariables.values().stream().map(Object::toString).toArray(String[]::new)
+            );
+
+        }
+
+        return message;
+
+    }
+
+    private String addBrackets(String key) {
+        return "{".concat(key).concat("}");
     }
 
 }

@@ -16,8 +16,11 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
   application:
     name: sprello
-  mvc:
-    locale: br
 server:
   servlet:
     context-path: /sprello
+
+app:
+  authorization-token:
+    expiration-in-seconds: 600
+    signature-key: dac1231R!@!R!@ACWKDP!K@K124210

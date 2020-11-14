@@ -1,4 +1,4 @@
-package br.com.caiqueborges.sprello.user.controller.model;
+package br.com.caiqueborges.sprello.security.controller.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,7 +12,7 @@ import javax.validation.constraints.Size;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CreateUserRequest {
+public class LoginRequest {
 
     @Email(message = "{user.email.valid}")
     @NotBlank(message = "{user.email.notblank}")
@@ -22,13 +22,5 @@ public class CreateUserRequest {
     @Size(min = 8, message = "{user.password.size.min}")
     @NotBlank(message = "{user.password.notblank}")
     private String password;
-
-    @Size(max = 80, message = "{user.firstname.size.max}")
-    @NotBlank(message = "{user.firstname.notblank}")
-    private String firstName;
-
-    @Size(max = 300, message = "{user.lastname.size.max}")
-    @NotBlank(message = "{user.lastname.notblank}")
-    private String lastName;
 
 }

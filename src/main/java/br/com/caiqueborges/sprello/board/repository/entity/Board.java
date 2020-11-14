@@ -24,8 +24,8 @@ public class Board {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "{name.notempty}", groups = ValidBoardSave.class)
-    @Size(max = 40, message = "{name.size.max}", groups = ValidBoardSave.class)
+    @NotBlank(message = "{board.name.notempty}", groups = ValidBoardSave.class)
+    @Size(max = 40, message = "{board.name.size.max}", groups = ValidBoardSave.class)
     @Column(name = "name", nullable = false)
     private String name;
 

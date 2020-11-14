@@ -12,8 +12,8 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor
 public class CreateBoardRequest {
 
-    @NotBlank(message = "{name.notempty}")
-    @Size(max = 40, message = "{name.size.max}")
+    @NotBlank(message = "{board.name.notempty}")
+    @Size(max = 40, message = "{board.name.size.max}")
     private String name;
 
 }

@@ -1,10 +1,10 @@
 package br.com.caiqueborges.sprello.user.controller;
 
-import br.com.caiqueborges.sprello.board.repository.entity.User;
 import br.com.caiqueborges.sprello.user.controller.mapper.UserControllerMapperImpl;
 import br.com.caiqueborges.sprello.user.controller.model.CreateUserRequest;
 import br.com.caiqueborges.sprello.user.fixture.CreateUserRequestTemplateLoader;
 import br.com.caiqueborges.sprello.user.fixture.UserTemplateLoader;
+import br.com.caiqueborges.sprello.user.repository.entity.User;
 import br.com.caiqueborges.sprello.user.service.CreateUserService;
 import br.com.six2six.fixturefactory.Fixture;
 import br.com.six2six.fixturefactory.loader.FixtureFactoryLoader;
