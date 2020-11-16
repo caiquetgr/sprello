@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 
 import static org.apache.commons.collections4.MapUtils.emptyIfNull;
 import static org.apache.commons.collections4.MapUtils.isNotEmpty;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.replaceEachRepeatedly;
 
 @RequiredArgsConstructor
@@ -69,15 +70,15 @@ public class ExceptionHandlerControllerAdvice extends ResponseEntityExceptionHan
     }
 
     @ExceptionHandler({BaseException.class})
-    public ResponseEntity<Object> handleAnyException(BaseException ex,
-                                                     WebRequest webRequest,
-                                                     Locale locale) {
+    public ResponseEntity<Object> handleBaseException(BaseException ex,
+                                                      WebRequest webRequest,
+                                                      Locale locale) {
 
         final Class<? extends BaseException> exceptionClass = ex.getClass();
 
-        final HttpStatus status = exceptionClass.isAnnotationPresent(ResponseStatus.class) ?
-                exceptionClass.getAnnotation(ResponseStatus.class).value() :
-                HttpStatus.INTERNAL_SERVER_ERROR;
+        final HttpStatus status = exceptionClass.isAnnotationPresent(ResponseStatus.class)
+                ? exceptionClass.getAnnotation(ResponseStatus.class).value()
+                : HttpStatus.INTERNAL_SERVER_ERROR;
 
         String message = getMessage(ex, locale);
         ApiError apiError = createApiError((ServletWebRequest) webRequest, status, Collections.singletonList(message));
@@ -88,7 +89,12 @@ public class ExceptionHandlerControllerAdvice extends ResponseEntityExceptionHan
 
     private String getMessage(BaseException ex, Locale locale) {
 
-        String message = messageSource.getMessage(ex.getMessageKey(), null, locale);
+        final String exceptionMessageKey = ex.getMessageKey();
+        final String message = messageSource.getMessage(exceptionMessageKey, null, locale);
+
+        if (isBlank(message)) {
+            return exceptionMessageKey;
+        }
 
         Map<String, Object> messageVariables = emptyIfNull(ex.getMessageVariables());
 

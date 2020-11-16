@@ -8,7 +8,7 @@ CREATE TABLE boards
 CREATE TABLE users
 (
     id            SERIAL,
-    email         character varying        NOT NULL,
+    email         character varying        NOT NULL UNIQUE,
     first_name    character varying(80)    NOT NULL,
     last_name     character varying(300)   NOT NULL,
     password      character varying        NOT NULL,

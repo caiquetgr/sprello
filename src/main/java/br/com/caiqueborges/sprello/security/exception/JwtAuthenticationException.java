@@ -8,11 +8,17 @@ import java.util.Collections;
 import java.util.Map;
 
 @ResponseStatus(HttpStatus.UNAUTHORIZED)
-public class LoginUserNotActiveException extends BaseException {
+public class JwtAuthenticationException extends BaseException {
+
+    private final String message;
+
+    public JwtAuthenticationException(String message) {
+        this.message = message;
+    }
 
     @Override
     public String getMessageKey() {
-        return "login.failed.inactive";
+        return message;
     }
 
     @Override
