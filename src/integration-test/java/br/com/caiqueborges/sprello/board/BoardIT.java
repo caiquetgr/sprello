@@ -1,6 +1,6 @@
 package br.com.caiqueborges.sprello.board;
 
-import br.com.caiqueborges.sprello.AbstractIT;
+import br.com.caiqueborges.sprello.AuthenticatedIT;
 import br.com.caiqueborges.sprello.board.controller.model.CreateBoardResponse;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
@@ -13,13 +13,15 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class BoardIT extends AbstractIT {
+public class BoardIT extends AuthenticatedIT {
+
+    private static final String BOARDS_RESOURCE = "/boards";
 
     @SneakyThrows
     @Test
-    void whenValidCreateBoard_thenReturn201AndCreatedEntity() {
+    void whenCreateBoard_thenReturn201AndCreatedEntity() {
 
-        MockHttpServletResponse response = this.mockMvc.perform(post("/boards")
+        MockHttpServletResponse response = this.performAuthenticated(post(BOARDS_RESOURCE)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"name\": \"Test\"}"))
                 .andExpect(status().isCreated())
@@ -36,9 +38,20 @@ public class BoardIT extends AbstractIT {
 
     @SneakyThrows
     @Test
-    void whenInvalidCreateBoardWithNameEmpty_thenReturn400() {
+    void whenCreateBoard_withoutAuthentication_thenReturn401() {
 
-        this.mockMvc.perform(post("/boards")
+        this.mockMvc.perform(post(BOARDS_RESOURCE)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"name\": \"Test\"}"))
+                .andExpect(status().isUnauthorized());
+
+    }
+
+    @SneakyThrows
+    @Test
+    void whenCreateBoard_withNameEmpty_thenReturn400() {
+
+        performAuthenticated(post(BOARDS_RESOURCE)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"name\": \"\"}"))
                 .andExpect(status().isBadRequest())
@@ -48,10 +61,9 @@ public class BoardIT extends AbstractIT {
 
     @SneakyThrows
     @Test
-    void whenInvalidCreateBoardWithContentNull_thenReturn400() {
+    void whenCreateBoard_withContentNull_thenReturn400() {
 
-        this.mockMvc.perform(post("/boards")
-                .contentType(MediaType.APPLICATION_JSON))
+        performAuthenticated(post(BOARDS_RESOURCE).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
 
     }

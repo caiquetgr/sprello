@@ -48,7 +48,7 @@ class JwtLoginService implements LoginService {
 
         final User user = userOpt.get();
 
-        if (negate(passwordEncoder.matches(password, user.getPassword()))) {
+        if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new LoginFailedException();
         }
 
