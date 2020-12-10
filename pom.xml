@@ -281,6 +281,14 @@
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <excludes>
+                        <exclude>**/br/com/caiqueborges/sprello/security/filter/**</exclude>
+                        <exclude>**/br/com/caiqueborges/sprello/config/**</exclude>
+                        <exclude>**/br/com/caiqueborges/sprello/SprelloApplication.class</exclude>
+                        <exclude>**/exception/**</exclude>
+                    </excludes>
+                </configuration>
             </plugin>
 
         </plugins>

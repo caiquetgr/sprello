@@ -8,17 +8,24 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.impl.FixedClock;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.time.Clock;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Date;
 
+@RequiredArgsConstructor
 @Service
 public class JwtService {
 
-    public static final ZoneId ZONE_UTC = ZoneId.of("UTC");
+    private static final ZoneId ZONE_UTC = ZoneId.of("UTC");
+
+    private final Clock clock;
+
     @Value("${app.authorization-token.expiration-in-seconds:600}")
     private Long expirationInSeconds;
 
@@ -28,7 +35,7 @@ public class JwtService {
     public JwtInfo createJwt(User user) {
 
         Date issuedAt = new Date();
-        Date expirationDate = new Date(System.currentTimeMillis() + (expirationInSeconds * 1000));
+        Date expirationDate = new Date(clock.millis() + (expirationInSeconds * 1000));
 
         String authorizationToken = Jwts.builder()
                 .setId(user.getId().toString())
@@ -48,9 +55,15 @@ public class JwtService {
     public Jws<Claims> parseToken(String jwtToken) {
 
         try {
+
+            final Date now = new Date(this.clock.millis());
+            final FixedClock jwtClock = new FixedClock(now);
+
             return Jwts.parser()
+                    .setClock(jwtClock)
                     .setSigningKey(signatureKey)
                     .parseClaimsJws(jwtToken);
+            
         } catch (JwtException e) {
             throw new JwtAuthenticationException(e.getLocalizedMessage());
         }
@@ -61,10 +74,14 @@ public class JwtService {
         return tokenClaims.getBody().getSubject();
     }
 
+    public String getUserId(Jws<Claims> tokenClaims) {
+        return tokenClaims.getBody().getId();
+    }
+
     public boolean isTokenValid(Jws<Claims> tokenClaims) {
 
         Date tokenExpiration = tokenClaims.getBody().getExpiration();
-        ZonedDateTime now = ZonedDateTime.now(ZONE_UTC);
+        ZonedDateTime now = ZonedDateTime.ofInstant(clock.instant(), ZONE_UTC);
 
         return now.isBefore(ZonedDateTime.ofInstant(tokenExpiration.toInstant(), ZONE_UTC));
 

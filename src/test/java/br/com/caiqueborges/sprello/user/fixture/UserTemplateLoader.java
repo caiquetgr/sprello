@@ -22,13 +22,13 @@ public class UserTemplateLoader implements TemplateLoader {
                     add("firstName", "Caique");
                     add("lastName", "Aquino Borges");
                     add("email", "caiquetgr@gmail.com");
+                    add("password", "p@s5w0rd1#@");
                 }});
 
         Fixture.of(User.class)
                 .addTemplate(AFTER_INSERT)
                 .inherits(PRE_INSERT, new Rule() {{
                     add("id", Long.valueOf(1L));
-                    add("password", "$!@#dasdcasbv");
                     add("creationDate", ZonedDateTime.of(2020, Month.MAY.getValue(),
                             12, 12, 00, 00, 000000, ZoneId.of("UTC")));
                     add("active", Boolean.TRUE);

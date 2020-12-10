@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -40,11 +39,18 @@ public abstract class AbstractIT {
     @Autowired
     protected Flyway flyway;
 
-    @Container
-    public static PostgreSQLContainer postgreSQLContainer = new PostgreSQLContainer("postgres:13")
-            .withDatabaseName("sprello")
-            .withUsername("it")
-            .withPassword("it");
+    static final PostgreSQLContainer postgreSQLContainer;
+
+    static {
+
+        postgreSQLContainer = new PostgreSQLContainer("postgres:13")
+                .withDatabaseName("sprello")
+                .withUsername("it")
+                .withPassword("it");
+
+        postgreSQLContainer.start();
+
+    }
 
     @DynamicPropertySource
     static void postgresqlProperties(DynamicPropertyRegistry registry) {
