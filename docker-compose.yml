@@ -1,0 +1,32 @@
+version: "3.9"
+
+services:
+  app:
+    image: caiqueborges/sprello:1.0.0
+    container_name: sprello
+    ports:
+      - "8080:8080"
+    networks:
+      - sprello-network
+    environment:
+      - DATABASE_URL=jdbc:postgresql://postgres-sprello:5432/sprello
+      - DATABASE_USERNAME=sprello_user
+      - DATABASE_PASSWORD=sprello123
+    depends_on:
+      - db
+
+  db:
+    image: postgres:13
+    container_name: postgres-sprello
+    ports:
+      - "5432:5432"
+    networks:
+      - sprello-network
+    volumes:
+      - ./database/database_init.sql:/docker-entrypoint-initdb.d/init.sql
+    environment:
+      - POSTGRES_PASSWORD=postgres
+
+networks:
+  sprello-network:
+    driver: bridge

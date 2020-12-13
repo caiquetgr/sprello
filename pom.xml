@@ -10,7 +10,7 @@
     </parent>
     <groupId>br.com.caiqueborges</groupId>
     <artifactId>sprello</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.0</version>
     <name>sprello</name>
     <description>A ToDo project, for practising some things. Checkout the README.md for more</description>
 
@@ -179,6 +179,14 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <layers>
+                        <enabled>true</enabled>
+                    </layers>
+                    <image>
+                        <name>docker.io/caiqueborges/${project.artifactId}:${project.version}</name>
+                    </image>
+                </configuration>
             </plugin>
 
             <plugin>
