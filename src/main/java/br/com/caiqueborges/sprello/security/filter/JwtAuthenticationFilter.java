@@ -51,10 +51,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         filterChain.doFilter(request, response);
 
+        SecurityContextHolder.clearContext();
+
     }
 
     private Authentication createAuthentication(Jws<Claims> tokenClaims) {
-        return new UsernamePasswordAuthenticationToken(jwtService.getUserEmail(tokenClaims),
+        return new UsernamePasswordAuthenticationToken(jwtService.getUserId(tokenClaims),
                 null, Collections.emptyList());
     }
 

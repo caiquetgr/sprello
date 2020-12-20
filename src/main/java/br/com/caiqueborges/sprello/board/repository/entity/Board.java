@@ -1,5 +1,6 @@
 package br.com.caiqueborges.sprello.board.repository.entity;
 
+import br.com.caiqueborges.sprello.base.repository.entity.UserAuditedEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,7 +19,7 @@ import javax.validation.constraints.Size;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Board {
+public class Board extends UserAuditedEntity<Long> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -14,15 +14,15 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.Clock;
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Date;
+
+import static br.com.caiqueborges.sprello.config.ClockConfig.ZONE_UTC;
 
 @RequiredArgsConstructor
 @Service
 public class JwtService {
 
-    private static final ZoneId ZONE_UTC = ZoneId.of("UTC");
 
     private final Clock clock;
 
@@ -63,7 +63,7 @@ public class JwtService {
                     .setClock(jwtClock)
                     .setSigningKey(signatureKey)
                     .parseClaimsJws(jwtToken);
-            
+
         } catch (JwtException e) {
             throw new JwtAuthenticationException(e.getLocalizedMessage());
         }
