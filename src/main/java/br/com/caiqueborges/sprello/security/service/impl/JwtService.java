@@ -17,7 +17,7 @@ import java.time.Clock;
 import java.time.ZonedDateTime;
 import java.util.Date;
 
-import static br.com.caiqueborges.sprello.config.ClockConfig.ZONE_UTC;
+import static br.com.caiqueborges.sprello.config.ClockAndTimeZoneConfig.DEFAULT_ZONE;
 
 @RequiredArgsConstructor
 @Service
@@ -47,7 +47,7 @@ public class JwtService {
 
         return JwtInfo.builder()
                 .authorizationToken(authorizationToken)
-                .expirationDate(ZonedDateTime.ofInstant(expirationDate.toInstant(), ZONE_UTC))
+                .expirationDate(ZonedDateTime.ofInstant(expirationDate.toInstant(), DEFAULT_ZONE))
                 .build();
 
     }
@@ -81,9 +81,9 @@ public class JwtService {
     public boolean isTokenValid(Jws<Claims> tokenClaims) {
 
         Date tokenExpiration = tokenClaims.getBody().getExpiration();
-        ZonedDateTime now = ZonedDateTime.ofInstant(clock.instant(), ZONE_UTC);
+        ZonedDateTime now = ZonedDateTime.ofInstant(clock.instant(), DEFAULT_ZONE);
 
-        return now.isBefore(ZonedDateTime.ofInstant(tokenExpiration.toInstant(), ZONE_UTC));
+        return now.isBefore(ZonedDateTime.ofInstant(tokenExpiration.toInstant(), DEFAULT_ZONE));
 
     }
 

@@ -6,44 +6,34 @@ import br.com.caiqueborges.sprello.user.controller.model.CreateUserResponse;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 
+import static br.com.caiqueborges.sprello.util.JsonUnitUtils.jsonIsEqualToFile;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class UserIT extends AbstractIT {
 
+    private static final String USERS_ENDPOINT = "/users";
+
     private static final String JSON_USER_FOLDER = JSON_FOLDER + "user/";
-    private static final String USERS_RESOURCE = "/users";
+    private static final String CREATE_USER_VALID_REQUEST_JSON = JSON_USER_FOLDER + "create-user-valid-request.json";
+    private static final String CREATE_USER_VALID_RESPONSE_JSON = JSON_USER_FOLDER + "create-user-valid-response.json";
 
     @SneakyThrows
     @Test
     void whenCreateUser_withValidCreateUserRequest_thenReturn201AndCreatedEntity() {
 
-        final CreateUserRequest validCreateUserRequest = getValidCreateUserRequest();
-
-        final MockHttpServletResponse response = this.mockMvc.perform(post(USERS_RESOURCE)
+        this.mockMvc.perform(post(USERS_ENDPOINT)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(validCreateUserRequest)))
+                .content(readFile(CREATE_USER_VALID_REQUEST_JSON)))
                 .andExpect(status().isCreated())
-                .andReturn()
-                .getResponse();
+                .andExpect(jsonIsEqualToFile(CREATE_USER_VALID_RESPONSE_JSON));
 
-        final CreateUserResponse createUserResponse = this.objectMapper
-                .readValue(response.getContentAsString(), CreateUserResponse.class);
-
-        assertThat(createUserResponse.getId()).isNotNull().isNotZero();
-        assertThat(createUserResponse.getFirstName()).isEqualTo(validCreateUserRequest.getFirstName());
-        assertThat(createUserResponse.getLastName()).isEqualTo(validCreateUserRequest.getLastName());
-        assertThat(createUserResponse.getEmail()).isEqualTo(validCreateUserRequest.getEmail());
-
-    }
-
-    private CreateUserRequest getValidCreateUserRequest() {
-        return readJsonToObject(JSON_USER_FOLDER.concat("createUserValidRequest.json"), CreateUserRequest.class);
     }
 
     @SneakyThrows
@@ -63,9 +53,13 @@ public class UserIT extends AbstractIT {
 
     }
 
+    private CreateUserRequest getValidCreateUserRequest() {
+        return readJsonToObject(CREATE_USER_VALID_REQUEST_JSON, CreateUserRequest.class);
+    }
+
     private void callCreateUserAndExpectBadRequest(CreateUserRequest createUserRequest) throws Exception {
 
-        this.mockMvc.perform(post(USERS_RESOURCE)
+        this.mockMvc.perform(post(USERS_ENDPOINT)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(createUserRequest)))
                 .andExpect(status().isBadRequest());

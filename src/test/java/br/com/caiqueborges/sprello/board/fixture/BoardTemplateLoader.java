@@ -7,6 +7,11 @@ import br.com.six2six.fixturefactory.Fixture;
 import br.com.six2six.fixturefactory.Rule;
 import br.com.six2six.fixturefactory.loader.TemplateLoader;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.Month;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
 public class BoardTemplateLoader implements TemplateLoader {
@@ -16,13 +21,22 @@ public class BoardTemplateLoader implements TemplateLoader {
 
     @Override
     public void load() {
+
+        final ZonedDateTime insertionDate = ZonedDateTime.of(
+                LocalDate.of(2020, Month.MAY, 12),
+                LocalTime.of(21, 34, 50, 347659000),
+                ZoneId.of("UTC")
+        );
+
         Fixture.of(Board.class)
                 .addTemplate(PRE_INSERT, new Rule() {{
                     add("name", "Test");
                     add("createdBy", one(User.class, UserTemplateLoader.AFTER_INSERT));
+                    add("createdById", 1L);
                     add("lastModifiedBy", one(User.class, UserTemplateLoader.AFTER_INSERT));
-                    add("createdDate", ZonedDateTime.now());
-                    add("lastModifiedDate", ZonedDateTime.now());
+                    add("lastModifiedById", 1L);
+                    add("createdDate", insertionDate);
+                    add("lastModifiedDate", insertionDate);
                     add("deleted", Boolean.FALSE);
                 }});
 

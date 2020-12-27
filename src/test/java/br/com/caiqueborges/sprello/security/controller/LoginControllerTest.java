@@ -68,7 +68,7 @@ public class LoginControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(loginRequest)))
                 .andExpect(status().isOk())
-                .andExpect(jsonIsEqualToFile(LOGIN_JSON_FOLDER + "/loginResponse.json"));
+                .andExpect(jsonIsEqualToFile(LOGIN_JSON_FOLDER + "/login-response.json"));
 
     }
 

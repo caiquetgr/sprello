@@ -17,7 +17,8 @@ public class LoginIT extends AbstractIT {
     private static final String JSON_SECURITY_FOLDER = JSON_FOLDER + SECURITY_FOLDER;
     private static final String SQL_SECURITY_FOLDER = SQL_FOLDER + SECURITY_FOLDER;
 
-    public static final String CREATE_VALID_USER_SQL = SQL_SECURITY_FOLDER + "createValidUser.sql";
+    public static final String CREATE_VALID_USER_SQL = SQL_SECURITY_FOLDER + "create-valid-user.sql";
+    public static final String CREATE_INACTIVE_USER_SQL = SQL_SECURITY_FOLDER + "create-inactive-user.sql";
 
     @SneakyThrows
     @Sql(CREATE_VALID_USER_SQL)
@@ -36,11 +37,11 @@ public class LoginIT extends AbstractIT {
     }
 
     private LoginRequest getValidLoginRequest() {
-        return readJsonToObject(JSON_SECURITY_FOLDER.concat("loginValidRequest.json"), LoginRequest.class);
+        return readJsonToObject(JSON_SECURITY_FOLDER.concat("login-valid-request.json"), LoginRequest.class);
     }
 
     @SneakyThrows
-    @Sql(SQL_SECURITY_FOLDER + "createValidUser.sql")
+    @Sql(CREATE_VALID_USER_SQL)
     @Test
     void whenLogin_withInvalidPassword_thenReturn401() {
 
@@ -56,7 +57,7 @@ public class LoginIT extends AbstractIT {
     }
 
     @SneakyThrows
-    @Sql(SQL_SECURITY_FOLDER + "createInactiveUser.sql")
+    @Sql(CREATE_INACTIVE_USER_SQL)
     @Test
     void whenLogin_withUserInactive_thenReturn401() {
 

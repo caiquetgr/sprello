@@ -46,12 +46,18 @@ public abstract class UserAuditedEntity<ID> implements Persistable<ID> {
     @JoinColumn(name = "CREATED_BY", nullable = false, updatable = false)
     private User createdBy;
 
+    @Column(name = "CREATED_BY", insertable = false, updatable = false)
+    private Long createdById;
+
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @LastModifiedBy
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MODIFIED_BY", nullable = false)
     private User lastModifiedBy;
+
+    @Column(name = "MODIFIED_BY", insertable = false, updatable = false)
+    private Long lastModifiedById;
 
     @Column(name = "DELETED", nullable = false)
     private Boolean deleted = Boolean.FALSE;

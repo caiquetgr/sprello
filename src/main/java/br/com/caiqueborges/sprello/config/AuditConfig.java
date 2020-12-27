@@ -15,7 +15,7 @@ import java.time.ZonedDateTime;
 import java.time.temporal.TemporalAccessor;
 import java.util.Optional;
 
-import static br.com.caiqueborges.sprello.config.ClockConfig.ZONE_UTC;
+import static br.com.caiqueborges.sprello.config.ClockAndTimeZoneConfig.DEFAULT_ZONE;
 
 @Configuration
 @EnableJpaAuditing(dateTimeProviderRef = "clockDateTimeProvider")
@@ -59,7 +59,7 @@ public class AuditConfig {
 
         @Override
         public Optional<TemporalAccessor> getNow() {
-            return Optional.of(ZonedDateTime.ofInstant(clock.instant(), ZONE_UTC));
+            return Optional.of(ZonedDateTime.ofInstant(clock.instant(), DEFAULT_ZONE));
         }
 
     }

@@ -66,7 +66,7 @@ class UserControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(createUserRequest)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonIsEqualToFile(USER_JSON_FOLDER + "/createUserResponse.json"));
+                .andExpect(jsonIsEqualToFile(USER_JSON_FOLDER + "/create-user-response.json"));
 
     }
 
