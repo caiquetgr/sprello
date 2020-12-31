@@ -7,6 +7,7 @@ import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.Where;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -23,9 +24,9 @@ import javax.persistence.MappedSuperclass;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 
+@MappedSuperclass
 @Getter
 @Setter
-@MappedSuperclass
 @DynamicInsert
 @DynamicUpdate
 @EntityListeners(AuditingEntityListener.class)

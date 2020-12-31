@@ -17,6 +17,8 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatCode;
+import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 
@@ -84,6 +86,22 @@ class BoardServiceTest {
                 .isInstanceOf(BoardNotFoundException.class);
 
         verify(boardRepository).findById(boardId);
+
+    }
+
+    @Test
+    void whenRepositoryDeleteLogicallyById_thenDoNothing() {
+
+        final Long boardId = Long.valueOf(1L);
+
+        willDoNothing()
+                .given(boardRepository)
+                .deleteLogicallyById(boardId);
+
+        assertThatCode(() -> service.deleteBoardById(boardId))
+                .doesNotThrowAnyException();
+
+        verify(boardRepository).deleteLogicallyById(boardId);
 
     }
 

@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -31,6 +32,9 @@ class BoardRepositoryTest {
 
     @Autowired
     private BoardRepository repository;
+
+    @Autowired
+    private TestEntityManager entityManager;
 
     @BeforeAll
     public static void setup() {
@@ -85,6 +89,22 @@ class BoardRepositoryTest {
         assertThat(board.getDeleted()).isFalse();
         assertThat(board.getCreatedDate()).isEqualTo(createdAndModifiedDate);
         assertThat(board.getLastModifiedDate()).isEqualTo(createdAndModifiedDate);
+
+    }
+
+    @Sql(scripts = {UserSql.CREATE_USER_1_SQL, BoardSql.INSERT_BOARD})
+    @Test
+    void whenDeleteLogicallyById_thenSetDeletedToTrue() {
+
+        final Long boardId = 1L;
+
+        repository.deleteLogicallyById(boardId);
+        entityManager.flush();
+
+        final Board board = entityManager.find(Board.class, boardId);
+
+        assertThat(board).isNotNull();
+        assertThat(board.getDeleted()).isTrue();
 
     }
 

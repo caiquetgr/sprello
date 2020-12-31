@@ -1,5 +1,6 @@
 package br.com.caiqueborges.sprello.board.fixture;
 
+import br.com.caiqueborges.sprello.board.controller.model.UpdateBoardRequest;
 import br.com.caiqueborges.sprello.board.repository.entity.Board;
 import br.com.caiqueborges.sprello.user.fixture.UserTemplateLoader;
 import br.com.caiqueborges.sprello.user.repository.entity.User;
@@ -19,6 +20,9 @@ public class BoardTemplateLoader implements TemplateLoader {
     public static final String PRE_INSERT = "preInsert";
     public static final String AFTER_INSERT = "afterInsert";
 
+    public static final String UPDATE_BOARD_REQUEST = "updateBoardRequest";
+    public static final String BOARD_UPDATE_RETURN = "boardUpdateReturn";
+
     @Override
     public void load() {
 
@@ -27,6 +31,23 @@ public class BoardTemplateLoader implements TemplateLoader {
                 LocalTime.of(21, 34, 50, 347659000),
                 ZoneId.of("UTC")
         );
+
+        addPreInsert(insertionDate);
+        addAfterInsert();
+        addUpdateBoardRequest();
+    }
+
+    private void addAfterInsert() {
+
+        Fixture.of(Board.class)
+                .addTemplate(AFTER_INSERT)
+                .inherits(PRE_INSERT, new Rule() {{
+                    add("id", 1L);
+                }});
+
+    }
+
+    private void addPreInsert(ZonedDateTime insertionDate) {
 
         Fixture.of(Board.class)
                 .addTemplate(PRE_INSERT, new Rule() {{
@@ -40,9 +61,21 @@ public class BoardTemplateLoader implements TemplateLoader {
                     add("deleted", Boolean.FALSE);
                 }});
 
-        Fixture.of(Board.class).addTemplate(AFTER_INSERT)
-                .inherits(PRE_INSERT, new Rule() {{
-                    add("id", 1L);
-                }});
     }
+
+    private void addUpdateBoardRequest() {
+
+        Fixture.of(UpdateBoardRequest.class)
+                .addTemplate(UPDATE_BOARD_REQUEST, new Rule() {{
+                    add("name", "Test update");
+                }});
+
+        Fixture.of(Board.class)
+                .addTemplate(BOARD_UPDATE_RETURN)
+                .inherits(AFTER_INSERT, new Rule() {{
+                    add("name", "Test update");
+                }});
+
+    }
+
 }

@@ -4,8 +4,8 @@ import br.com.caiqueborges.sprello.board.repository.entity.Board;
 
 import javax.validation.Valid;
 
-public interface CreateBoardService {
+public interface UpdateBoardService {
 
-    Board createBoard(@Valid Board board);
+    Board updateBoard(@Valid Board board);
 
 }

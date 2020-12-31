@@ -13,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import javax.validation.groups.Default;
 
 @Table(name = "boards")
 @Entity
@@ -25,12 +26,9 @@ public class Board extends UserAuditedEntity<Long> {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "{board.name.notempty}", groups = ValidBoardSave.class)
-    @Size(max = 40, message = "{board.name.size.max}", groups = ValidBoardSave.class)
+    @NotBlank(message = "{board.name.notempty}", groups = Default.class)
+    @Size(max = 40, message = "{board.name.size.max}", groups = Default.class)
     @Column(name = "name", nullable = false)
     private String name;
-
-    public interface ValidBoardSave {
-    }
 
 }

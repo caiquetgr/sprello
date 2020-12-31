@@ -1,10 +1,8 @@
 package br.com.caiqueborges.sprello.board.repository;
 
+import br.com.caiqueborges.sprello.base.repository.UserAuditedRepository;
 import br.com.caiqueborges.sprello.board.repository.entity.Board;
-import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface BoardRepository extends JpaRepository<Board, Long> {
-
-    Board save(Board board);
+public interface BoardRepository extends UserAuditedRepository<Board, Long> {
 
 }
