@@ -19,4 +19,8 @@ public interface UserAuditedRepository<ENTITY extends UserAuditedEntity, ID> ext
     @Query("select e from #{#entityName} e where e.id = :id and e.deleted = false")
     Optional<ENTITY> findById(ID id);
 
+    default void deleteLogicallyById(ENTITY entity) {
+        deleteLogicallyById((ID) entity.getId());
+    }
+
 }

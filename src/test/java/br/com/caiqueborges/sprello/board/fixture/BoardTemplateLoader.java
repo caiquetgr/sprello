@@ -9,7 +9,6 @@ import br.com.six2six.fixturefactory.Rule;
 import br.com.six2six.fixturefactory.loader.TemplateLoader;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
 import java.time.ZoneId;
@@ -23,6 +22,8 @@ public class BoardTemplateLoader implements TemplateLoader {
     public static final String UPDATE_BOARD_REQUEST = "updateBoardRequest";
     public static final String BOARD_UPDATE_RETURN = "boardUpdateReturn";
 
+    public static final String PRE_UPDATE = "preUpdate";
+
     @Override
     public void load() {
 
@@ -35,6 +36,8 @@ public class BoardTemplateLoader implements TemplateLoader {
         addPreInsert(insertionDate);
         addAfterInsert();
         addUpdateBoardRequest();
+        addPreUpdateBoard();
+
     }
 
     private void addAfterInsert() {
@@ -73,6 +76,16 @@ public class BoardTemplateLoader implements TemplateLoader {
         Fixture.of(Board.class)
                 .addTemplate(BOARD_UPDATE_RETURN)
                 .inherits(AFTER_INSERT, new Rule() {{
+                    add("name", "Test update");
+                }});
+
+    }
+
+    private void addPreUpdateBoard() {
+
+        Fixture.of(Board.class)
+                .addTemplate(PRE_UPDATE, new Rule() {{
+                    add("id", 1L);
                     add("name", "Test update");
                 }});
 

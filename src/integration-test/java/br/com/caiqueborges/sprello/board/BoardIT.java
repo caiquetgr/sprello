@@ -5,16 +5,14 @@ import br.com.caiqueborges.sprello.board.repository.entity.Board;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureTestEntityManager;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 
 import javax.persistence.EntityManager;
 
 import static br.com.caiqueborges.sprello.board.controller.BoardController.ENDPOINT_BOARDS_BY_ID;
-import static br.com.caiqueborges.sprello.security.LoginIT.CREATE_VALID_USER_SQL;
+import static br.com.caiqueborges.sprello.login.LoginIT.CREATE_VALID_USER_2_SQL;
+import static br.com.caiqueborges.sprello.login.LoginIT.CREATE_VALID_USER_SQL;
 import static br.com.caiqueborges.sprello.util.JsonUnitUtils.jsonIsEqualToFile;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.hamcrest.Matchers.containsString;
@@ -43,6 +41,7 @@ public class BoardIT extends AuthenticatedIT {
     private static final String BOARDS_SQL_RESOURCE = SQL_FOLDER + "board/";
 
     private static final String INSERT_BOARD_1_SQL = BOARDS_SQL_RESOURCE + "insert-board-1.sql";
+    private static final String INSERT_BOARD_2_SQL = BOARDS_SQL_RESOURCE + "insert-board-2.sql";
     private static final String INSERT_BOARD_1_DELETED_SQL = BOARDS_SQL_RESOURCE + "insert-board-1-deleted.sql";
 
     @Autowired
@@ -144,6 +143,19 @@ public class BoardIT extends AuthenticatedIT {
 
     }
 
+    @Sql(scripts = {CREATE_VALID_USER_SQL, CREATE_VALID_USER_2_SQL, INSERT_BOARD_2_SQL})
+    @SneakyThrows
+    @Test
+    void whenGetBoardById_andBoardExists_andItIsFromAnotherUser_thenReturn404() {
+
+        final Long boardId = 2L;
+
+        performAuthenticated(get(ENDPOINT_BOARDS_BY_ID, boardId)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+
+    }
+
     @Sql(scripts = {CREATE_VALID_USER_SQL, INSERT_BOARD_1_SQL})
     @SneakyThrows
     @Test
@@ -160,7 +172,18 @@ public class BoardIT extends AuthenticatedIT {
         assertThat(board).isNotNull();
         assertThat(board.getDeleted()).isTrue();
 
-        // validar @where
+    }
+
+    @Sql(scripts = {CREATE_VALID_USER_SQL, CREATE_VALID_USER_2_SQL, INSERT_BOARD_2_SQL})
+    @SneakyThrows
+    @Test
+    void whenDeleteBoardById_andBoardExists_andItIsFromAnotherUser_thenReturn404() {
+
+        final Long boardId = 2L;
+
+        performAuthenticated(delete(ENDPOINT_BOARDS_BY_ID, boardId)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
 
     }
 
@@ -199,6 +222,21 @@ public class BoardIT extends AuthenticatedIT {
     void whenUpdateBoardById_andBoardIsDeleted_thenReturn404() {
 
         final Long boardId = 1L;
+
+        performAuthenticated(put(ENDPOINT_BOARDS_BY_ID, boardId)
+                .content(readFile(UPDATE_BOARD_VALID_REQUEST_JSON))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+
+    }
+
+
+    @Sql(scripts = {CREATE_VALID_USER_SQL, CREATE_VALID_USER_2_SQL, INSERT_BOARD_2_SQL})
+    @SneakyThrows
+    @Test
+    void whenUpdateBoardById_andBoardExists_andItIsFromAnotherUser_thenReturn404() {
+
+        final Long boardId = 2L;
 
         performAuthenticated(put(ENDPOINT_BOARDS_BY_ID, boardId)
                 .content(readFile(UPDATE_BOARD_VALID_REQUEST_JSON))

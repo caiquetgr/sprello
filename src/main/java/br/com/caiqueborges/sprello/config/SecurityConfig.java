@@ -1,7 +1,7 @@
 package br.com.caiqueborges.sprello.config;
 
-import br.com.caiqueborges.sprello.security.filter.JwtAuthenticationEntryPoint;
-import br.com.caiqueborges.sprello.security.filter.JwtAuthenticationFilter;
+import br.com.caiqueborges.sprello.base.web.filter.JwtAuthenticationEntryPoint;
+import br.com.caiqueborges.sprello.base.web.filter.JwtAuthenticationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

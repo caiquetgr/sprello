@@ -1,0 +1,22 @@
+package br.com.caiqueborges.sprello.base.web.exception;
+
+import br.com.caiqueborges.sprello.config.controlleradvice.BaseException;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
+import java.util.Map;
+
+@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+public class RequestAuthorizationUserIdException extends BaseException {
+
+    @Override
+    public String getMessageKey() {
+        return "request.user-id-exception";
+    }
+
+    @Override
+    public Map<String, Object> getMessageVariables() {
+        return null;
+    }
+
+}
