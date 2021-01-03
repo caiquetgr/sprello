@@ -40,9 +40,9 @@ public class BoardIT extends AuthenticatedIT {
 
     private static final String BOARDS_SQL_RESOURCE = SQL_FOLDER + "board/";
 
-    private static final String INSERT_BOARD_1_SQL = BOARDS_SQL_RESOURCE + "insert-board-1.sql";
+    public static final String INSERT_BOARD_1_SQL = BOARDS_SQL_RESOURCE + "insert-board-1.sql";
     private static final String INSERT_BOARD_2_SQL = BOARDS_SQL_RESOURCE + "insert-board-2.sql";
-    private static final String INSERT_BOARD_1_DELETED_SQL = BOARDS_SQL_RESOURCE + "insert-board-1-deleted.sql";
+    public static final String INSERT_BOARD_1_DELETED_SQL = BOARDS_SQL_RESOURCE + "insert-board-1-deleted.sql";
 
     @Autowired
     private EntityManager entityManager;

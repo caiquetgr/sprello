@@ -1,5 +1,6 @@
 package br.com.caiqueborges.sprello.board.controller;
 
+import br.com.caiqueborges.sprello.base.BaseTestController;
 import br.com.caiqueborges.sprello.board.controller.mapper.BoardControllerMapperImpl;
 import br.com.caiqueborges.sprello.board.controller.model.CreateBoardRequest;
 import br.com.caiqueborges.sprello.board.controller.model.UpdateBoardRequest;
@@ -11,21 +12,19 @@ import br.com.caiqueborges.sprello.board.service.ReadBoardService;
 import br.com.caiqueborges.sprello.board.service.UpdateBoardService;
 import br.com.six2six.fixturefactory.Fixture;
 import br.com.six2six.fixturefactory.loader.FixtureFactoryLoader;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
 
 import static br.com.caiqueborges.sprello.util.JsonUnitUtils.JSON_FOLDER;
 import static br.com.caiqueborges.sprello.util.JsonUnitUtils.jsonIsEqualToFile;
+import static br.com.caiqueborges.sprello.util.TestUtils.loadFixture;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -38,19 +37,13 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(BoardController.class)
-class BoardControllerTest {
+class BoardControllerTest extends BaseTestController {
 
     private static final String BOARD_JSON_FOLDER = JSON_FOLDER + "board/controller/";
 
     private static final String GET_BOARD_BY_ID_RESPONSE_JSON = BOARD_JSON_FOLDER + "get-board-by-id-response.json";
     private static final String CREATE_BOARD_RESPONSE_JSON = BOARD_JSON_FOLDER + "create-board-response.json";
     private static final String UPDATE_BOARD_RESPONSE_JSON = BOARD_JSON_FOLDER + "update-board-response.json";
-
-    @Autowired
-    private MockMvc mockMvc;
-
-    @Autowired
-    private ObjectMapper objectMapper;
 
     @MockBean
     private CreateBoardService createBoardService;
@@ -98,7 +91,7 @@ class BoardControllerTest {
         final Long boardId = 1L;
 
         given(readBoardService.getBoardById(boardId))
-                .willReturn(Fixture.from(Board.class).gimme(BoardTemplateLoader.AFTER_INSERT));
+                .willReturn(loadFixture(BoardTemplateLoader.AFTER_INSERT, Board.class));
 
         mockMvc.perform(get(BoardController.ENDPOINT_BOARDS_BY_ID, boardId)
                 .contentType(MediaType.APPLICATION_JSON))
@@ -128,11 +121,10 @@ class BoardControllerTest {
 
         final Long boardId = 1L;
 
-        final Board boardReturned = Fixture.from(Board.class)
-                .gimme(BoardTemplateLoader.BOARD_UPDATE_RETURN);
+        final Board boardReturned = loadFixture(BoardTemplateLoader.BOARD_UPDATE_RETURN, Board.class);
 
-        final UpdateBoardRequest updateBoardRequest = Fixture.from(UpdateBoardRequest.class)
-                .gimme(BoardTemplateLoader.UPDATE_BOARD_REQUEST);
+        final UpdateBoardRequest updateBoardRequest = loadFixture(BoardTemplateLoader.UPDATE_BOARD_REQUEST,
+                UpdateBoardRequest.class);
 
         given(updateBoardService.updateBoard(any(Board.class)))
                 .willReturn(boardReturned);

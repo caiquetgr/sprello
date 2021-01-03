@@ -1,5 +1,6 @@
 package br.com.caiqueborges.sprello.user.controller;
 
+import br.com.caiqueborges.sprello.base.BaseTestController;
 import br.com.caiqueborges.sprello.user.controller.mapper.UserControllerMapperImpl;
 import br.com.caiqueborges.sprello.user.controller.model.CreateUserRequest;
 import br.com.caiqueborges.sprello.user.fixture.CreateUserRequestTemplateLoader;
@@ -23,21 +24,16 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static br.com.caiqueborges.sprello.util.JsonUnitUtils.JSON_FOLDER;
 import static br.com.caiqueborges.sprello.util.JsonUnitUtils.jsonIsEqualToFile;
+import static br.com.caiqueborges.sprello.util.TestUtils.loadFixture;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(value = UserController.class)
-class UserControllerTest {
+class UserControllerTest extends BaseTestController {
 
     private static final String USER_JSON_FOLDER = JSON_FOLDER + "user/controller";
-
-    @Autowired
-    private MockMvc mockMvc;
-
-    @Autowired
-    private ObjectMapper objectMapper;
 
     @MockBean
     private CreateUserService createUserService;
@@ -54,10 +50,10 @@ class UserControllerTest {
     @Test
     void whenValidInput_thenReturnStatus201AndBodyEntity() {
 
-        final CreateUserRequest createUserRequest = Fixture.from(CreateUserRequest.class)
-                .gimme(CreateUserRequestTemplateLoader.VALID_CREATE_USER_REQUEST);
+        final CreateUserRequest createUserRequest = loadFixture(CreateUserRequestTemplateLoader.VALID_CREATE_USER_REQUEST,
+                CreateUserRequest.class);
 
-        final User createdUser = Fixture.from(User.class).gimme(UserTemplateLoader.AFTER_INSERT);
+        final User createdUser = loadFixture(UserTemplateLoader.AFTER_INSERT, User.class);
 
         given(createUserService.createUser(any(User.class)))
                 .willReturn(createdUser);
