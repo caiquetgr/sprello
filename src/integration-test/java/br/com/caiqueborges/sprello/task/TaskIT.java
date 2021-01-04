@@ -29,8 +29,10 @@ public class TaskIT extends AuthenticatedIT {
     @Test
     void whenCreateTask_andValid_thenReturn201AndCreateTaskResponse() {
 
-        this.performAuthenticated(post(ENDPOINT_TASKS)
-                .content(CREATE_TASK_VALID_REQUEST_JSON)
+        final Long boardId = 1L;
+
+        this.performAuthenticated(post(ENDPOINT_TASKS, boardId)
+                .content(readFile(CREATE_TASK_VALID_REQUEST_JSON))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
                 .andExpect(jsonIsEqualToFile(CREATE_TASK_VALID_RESPONSE_JSON));
@@ -43,8 +45,10 @@ public class TaskIT extends AuthenticatedIT {
     @Test
     void whenCreateTask_andBoardNotFound_thenReturn404() {
 
-        this.performAuthenticated(post(ENDPOINT_TASKS)
-                .content(CREATE_TASK_VALID_REQUEST_JSON)
+        final Long boardId = 1L;
+
+        this.performAuthenticated(post(ENDPOINT_TASKS, boardId)
+                .content(readFile(CREATE_TASK_VALID_REQUEST_JSON))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
 
@@ -56,8 +60,10 @@ public class TaskIT extends AuthenticatedIT {
     @Test
     void whenCreateTask_andBoardIsDeleted_thenReturn404() {
 
-        this.mockMvc.perform(post(ENDPOINT_TASKS)
-                .content(CREATE_TASK_VALID_REQUEST_JSON)
+        final Long boardId = 1L;
+
+        this.performAuthenticated(post(ENDPOINT_TASKS, boardId)
+                .content(readFile(CREATE_TASK_VALID_REQUEST_JSON))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
 
@@ -69,8 +75,10 @@ public class TaskIT extends AuthenticatedIT {
     @Test
     void whenCreateTask_andWithoutAuthentication_thenReturn401() {
 
-        this.mockMvc.perform(post(ENDPOINT_TASKS)
-                .content(CREATE_TASK_VALID_REQUEST_JSON)
+        final Long boardId = 1L;
+
+        this.mockMvc.perform(post(ENDPOINT_TASKS, boardId)
+                .content(readFile(CREATE_TASK_VALID_REQUEST_JSON))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnauthorized());
 

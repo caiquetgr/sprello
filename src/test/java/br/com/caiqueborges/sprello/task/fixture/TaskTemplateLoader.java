@@ -65,6 +65,7 @@ public class TaskTemplateLoader implements TemplateLoader {
         Fixture.of(Task.class)
                 .addTemplate(PRE_INSERT, new Rule() {{
                     add("boardId", 1L);
+                    add("board", one(Board.class, BoardTemplateLoader.AFTER_INSERT));
                     add("name", taskName);
                     add("description", taskDescription);
                     add("taskStatus", one(TaskStatus.class, TaskStatusTemplateLoader.TASK_STATUS_TO_DO));
@@ -81,7 +82,6 @@ public class TaskTemplateLoader implements TemplateLoader {
                 .addTemplate(AFTER_INSERT)
                 .inherits(PRE_INSERT, new Rule() {{
                     add("id", 1L);
-                    add("board", one(Board.class, BoardTemplateLoader.AFTER_INSERT));
                 }});
 
     }

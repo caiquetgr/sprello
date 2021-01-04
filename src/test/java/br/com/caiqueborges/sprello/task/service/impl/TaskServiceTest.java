@@ -6,7 +6,7 @@ import br.com.caiqueborges.sprello.board.service.ReadBoardService;
 import br.com.caiqueborges.sprello.task.fixture.TaskStatusTemplateLoader;
 import br.com.caiqueborges.sprello.task.fixture.TaskTemplateLoader;
 import br.com.caiqueborges.sprello.task.repository.entity.Task;
-import br.com.caiqueborges.sprello.task.repository.entity.TaskRepository;
+import br.com.caiqueborges.sprello.task.repository.TaskRepository;
 import br.com.caiqueborges.sprello.task.repository.entity.TaskStatus;
 import br.com.caiqueborges.sprello.task.service.ReadTaskStatusService;
 import br.com.six2six.fixturefactory.loader.FixtureFactoryLoader;
@@ -59,6 +59,8 @@ class TaskServiceTest {
         final Task task = loadFixture(TaskTemplateLoader.PRE_INSERT, Task.class);
         final TaskStatus taskStatusToDo = loadFixture(TaskStatusTemplateLoader.TASK_STATUS_TO_DO, TaskStatus.class);
 
+        task.setBoard(null);
+
         given(readBoardService.getBoardById(board.getId()))
                 .willReturn(board);
 
@@ -91,7 +93,5 @@ class TaskServiceTest {
         assertThat(taskCaptured.getTaskStatus()).isEqualTo(taskStatusToDo);
 
     }
-
-    // TODO: create task error scenarios
 
 }

@@ -20,6 +20,7 @@ CREATE TABLE tasks
     name          character varying(100)   NOT NULL,
     description   character varying(500)   NOT NULL,
     task_status   integer                  NOT NULL,
+    creation_date timestamp with time zone NOT NULL,
     modified_date timestamp with time zone NOT NULL,
     created_by    integer                  NOT NULL,
     modified_by   integer                  NOT NULL,

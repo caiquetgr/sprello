@@ -33,7 +33,7 @@ class BoardService implements CreateBoardService, ReadBoardService, DeleteBoardS
     }
 
     @Override
-    public Board getBoardById(final Long boardId) {
+    public Board getBoardById(final Long boardId) throws BoardNotFoundException {
         return findBoardByIdAndUserCreated(boardId);
     }
 

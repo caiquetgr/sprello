@@ -2,8 +2,8 @@ package br.com.caiqueborges.sprello.task.service.impl;
 
 import br.com.caiqueborges.sprello.board.repository.entity.Board;
 import br.com.caiqueborges.sprello.board.service.ReadBoardService;
+import br.com.caiqueborges.sprello.task.repository.TaskRepository;
 import br.com.caiqueborges.sprello.task.repository.entity.Task;
-import br.com.caiqueborges.sprello.task.repository.entity.TaskRepository;
 import br.com.caiqueborges.sprello.task.repository.entity.TaskStatus;
 import br.com.caiqueborges.sprello.task.service.CreateTaskService;
 import br.com.caiqueborges.sprello.task.service.ReadTaskStatusService;
