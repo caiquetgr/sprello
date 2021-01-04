@@ -3,10 +3,13 @@ package br.com.caiqueborges.sprello.task.controller;
 import br.com.caiqueborges.sprello.task.controller.mapper.TaskControllerMapper;
 import br.com.caiqueborges.sprello.task.controller.model.CreateTaskRequest;
 import br.com.caiqueborges.sprello.task.controller.model.CreateTaskResponse;
+import br.com.caiqueborges.sprello.task.controller.model.GetTaskByIdResponse;
 import br.com.caiqueborges.sprello.task.service.CreateTaskService;
+import br.com.caiqueborges.sprello.task.service.ReadTaskService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,8 +23,10 @@ import java.util.Optional;
 public class TasksController {
 
     public static final String ENDPOINT_TASKS = "/boards/{boardId}/tasks";
+    public static final String ENDPOINT_TASKS_BY_ID = ENDPOINT_TASKS + "/{id}";
 
     private final CreateTaskService createTaskService;
+    private final ReadTaskService readTaskService;
     private final TaskControllerMapper taskControllerMapper;
 
     @PostMapping(ENDPOINT_TASKS)
@@ -38,6 +43,17 @@ public class TasksController {
 
     private ResponseEntity<CreateTaskResponse> buildResponseEntityCreatedWithBody(CreateTaskResponse createTaskResponse) {
         return ResponseEntity.status(HttpStatus.CREATED).body(createTaskResponse);
+    }
+
+    @GetMapping(ENDPOINT_TASKS_BY_ID)
+    public ResponseEntity<GetTaskByIdResponse> getTaskById(@PathVariable("boardId") Long boardId,
+                                                           @PathVariable("id") Long id) {
+
+        return Optional.of(readTaskService.getTaskByIdAndBoardId(id, boardId))
+                .map(taskControllerMapper::taskToGetTaskByIdResponse)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.noContent().build());
+
     }
 
 }
