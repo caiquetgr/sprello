@@ -3,10 +3,11 @@ package br.com.caiqueborges.sprello.task.service.impl;
 import br.com.caiqueborges.sprello.board.fixture.BoardTemplateLoader;
 import br.com.caiqueborges.sprello.board.repository.entity.Board;
 import br.com.caiqueborges.sprello.board.service.ReadBoardService;
+import br.com.caiqueborges.sprello.task.exception.TaskNotFoundException;
 import br.com.caiqueborges.sprello.task.fixture.TaskStatusTemplateLoader;
 import br.com.caiqueborges.sprello.task.fixture.TaskTemplateLoader;
-import br.com.caiqueborges.sprello.task.repository.entity.Task;
 import br.com.caiqueborges.sprello.task.repository.TaskRepository;
+import br.com.caiqueborges.sprello.task.repository.entity.Task;
 import br.com.caiqueborges.sprello.task.repository.entity.TaskStatus;
 import br.com.caiqueborges.sprello.task.service.ReadTaskStatusService;
 import br.com.six2six.fixturefactory.loader.FixtureFactoryLoader;
@@ -20,8 +21,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Optional;
+
 import static br.com.caiqueborges.sprello.util.TestUtils.loadFixture;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
@@ -91,6 +95,49 @@ class TaskServiceTest {
         assertThat(taskCaptured.getName()).isEqualTo("New task");
         assertThat(taskCaptured.getDescription()).isEqualTo("The new task description");
         assertThat(taskCaptured.getTaskStatus()).isEqualTo(taskStatusToDo);
+
+    }
+
+    @Tag("get_task_by_id")
+    @Test
+    void whenGetTaskByIdAndBoardId_thenReturnTask() {
+
+        final Board board = loadFixture(BoardTemplateLoader.AFTER_INSERT, Board.class);
+        final Task task = loadFixture(TaskTemplateLoader.AFTER_INSERT, Task.class);
+
+        given(readBoardService.getBoardById(board.getId()))
+                .willReturn(board);
+
+        given(taskRepository.findByIdAndBoardIdAndDeletedFalse(task.getId(), board.getId()))
+                .willReturn(Optional.ofNullable(task));
+
+        final Task taskReturned = taskService.getTaskByIdAndBoardId(task.getId(), board.getId());
+
+        assertThat(taskReturned).isEqualTo(task);
+
+        verify(readBoardService).getBoardById(board.getId());
+        verify(taskRepository).findByIdAndBoardIdAndDeletedFalse(task.getId(), board.getId());
+
+    }
+
+    @Tag("get_task_by_id")
+    @Test
+    void whenGetTaskByIdAndBoardId_andReturnsEmptyOptional_thenShouldThrowTaskNotFoundException() {
+
+        final Board board = loadFixture(BoardTemplateLoader.AFTER_INSERT, Board.class);
+        final Long taskId = 1L;
+
+        given(readBoardService.getBoardById(board.getId()))
+                .willReturn(board);
+
+        given(taskRepository.findByIdAndBoardIdAndDeletedFalse(taskId, board.getId()))
+                .willReturn(Optional.empty());
+
+        assertThatThrownBy(() -> taskService.getTaskByIdAndBoardId(taskId, board.getId()))
+                .isInstanceOf(TaskNotFoundException.class);
+
+        verify(readBoardService).getBoardById(board.getId());
+        verify(taskRepository).findByIdAndBoardIdAndDeletedFalse(taskId, board.getId());
 
     }
 

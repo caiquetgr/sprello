@@ -1,0 +1,15 @@
+{
+  "id": 1,
+  "boardId": 1,
+  "name": "Study task",
+  "description": "I have to study something new!",
+  "taskStatus": {
+    "id": 5,
+    "name": "Cancelled",
+    "description": "Task has been cancelled"
+  },
+  "createdBy": 1,
+  "createdDate": "2020-05-12T00:46:50.347659Z",
+  "lastModifiedBy": 1,
+  "lastModifiedDate": "${json-unit.any-string}"
+}

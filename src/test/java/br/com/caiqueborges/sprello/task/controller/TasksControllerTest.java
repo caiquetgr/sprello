@@ -1,15 +1,16 @@
 package br.com.caiqueborges.sprello.task.controller;
 
 import br.com.caiqueborges.sprello.base.BaseTestController;
-import br.com.caiqueborges.sprello.board.controller.model.GetBoardByIdResponse;
 import br.com.caiqueborges.sprello.task.controller.mapper.TaskControllerMapperImpl;
 import br.com.caiqueborges.sprello.task.controller.model.CreateTaskRequest;
 import br.com.caiqueborges.sprello.task.controller.model.CreateTaskResponse;
 import br.com.caiqueborges.sprello.task.controller.model.GetTaskByIdResponse;
 import br.com.caiqueborges.sprello.task.controller.model.TaskStatusResponse;
+import br.com.caiqueborges.sprello.task.controller.model.UpdateTaskStatusResponse;
 import br.com.caiqueborges.sprello.task.repository.entity.Task;
 import br.com.caiqueborges.sprello.task.service.CreateTaskService;
 import br.com.caiqueborges.sprello.task.service.ReadTaskService;
+import br.com.caiqueborges.sprello.task.service.UpdateTaskService;
 import br.com.six2six.fixturefactory.loader.FixtureFactoryLoader;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -25,15 +26,18 @@ import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.MediaType;
 
 import static br.com.caiqueborges.sprello.task.controller.TasksController.ENDPOINT_TASKS_BY_ID;
+import static br.com.caiqueborges.sprello.task.controller.TasksController.ENDPOINT_TASK_STATUS_BY_ID;
 import static br.com.caiqueborges.sprello.task.fixture.TaskTemplateLoader.AFTER_INSERT;
 import static br.com.caiqueborges.sprello.task.fixture.TaskTemplateLoader.CREATE_TASK_REQUEST_VALID;
 import static br.com.caiqueborges.sprello.task.fixture.TaskTemplateLoader.CREATE_TASK_REQUEST_VALID_ENTITY_RETURN;
+import static br.com.caiqueborges.sprello.task.fixture.TaskTemplateLoader.TASK_WITH_STATUS_DONE;
 import static br.com.caiqueborges.sprello.util.TestUtils.loadFixture;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -46,6 +50,9 @@ class TasksControllerTest extends BaseTestController {
 
     @MockBean
     private ReadTaskService readTaskService;
+
+    @MockBean
+    private UpdateTaskService updateTaskService;
 
     @SpyBean
     private TaskControllerMapperImpl taskControllerMapper;
@@ -242,6 +249,52 @@ class TasksControllerTest extends BaseTestController {
         verify(readTaskService).getTaskByIdAndBoardId(taskId, boardId);
         verify(taskControllerMapper).taskToGetTaskByIdResponse(task);
 
+    }
+
+    @SneakyThrows
+    @Tag("update_task_status")
+    @Test
+    void whenUpdateTaskStatus_thenReturn200AndGetBoardByIdResponse() {
+
+        final Long boardId = 1L;
+        final Long taskId = 1L;
+        final Long taskStatusId = 4L;
+
+        final Task task = loadFixture(TASK_WITH_STATUS_DONE, Task.class);
+
+        given(updateTaskService.updateTaskStatus(taskId, boardId, taskStatusId))
+                .willReturn(task);
+
+        final String responseBody = mockMvc.perform(patch(ENDPOINT_TASK_STATUS_BY_ID, boardId, taskId, taskStatusId)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        final UpdateTaskStatusResponse updateTaskStatusResponse = objectMapper.readValue(responseBody, UpdateTaskStatusResponse.class);
+
+        assertThat(updateTaskStatusResponse.getId()).isEqualTo(1L);
+        assertThat(updateTaskStatusResponse.getName()).isEqualTo("New task");
+        assertThat(updateTaskStatusResponse.getDescription()).isEqualTo("The new task description");
+        assertThat(updateTaskStatusResponse.getBoardId()).isEqualTo(1L);
+        assertThat(updateTaskStatusResponse.getTaskStatus()).isEqualTo(expectedTaskStatusDone());
+        assertThat(updateTaskStatusResponse.getCreatedBy()).isEqualTo(task.getCreatedById());
+        assertThat(updateTaskStatusResponse.getCreatedDate()).isEqualTo(task.getCreatedDate());
+        assertThat(updateTaskStatusResponse.getLastModifiedBy()).isEqualTo(task.getLastModifiedById());
+        assertThat(updateTaskStatusResponse.getLastModifiedDate()).isEqualTo(task.getLastModifiedDate());
+
+        verify(updateTaskService).updateTaskStatus(taskId, boardId, taskStatusId);
+        verify(taskControllerMapper).taskToUpdateTaskStatusResponse(task);
+
+    }
+
+    private TaskStatusResponse expectedTaskStatusDone() {
+        return TaskStatusResponse.builder()
+                .id(4L)
+                .name("Done")
+                .description("Task has already been finished")
+                .build();
     }
 
 }

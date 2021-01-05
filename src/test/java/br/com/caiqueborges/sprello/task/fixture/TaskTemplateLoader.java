@@ -25,10 +25,13 @@ public class TaskTemplateLoader implements TemplateLoader {
     public static final String PRE_INSERT = "TASK_PRE_INSERT";
     public static final String AFTER_INSERT = "TASK_AFTER_INSERT";
 
+    public static final String TASK_WITH_STATUS_DONE = "TASK_WITH_STATUS_DONE";
+
     @Override
     public void load() {
         addTemplatesCreateBoardRequest();
         addTemplatesPreAndAfterInsert();
+        addTemplatesTaskWithSpecificTaskStatus();
     }
 
     private void addTemplatesCreateBoardRequest() {
@@ -84,6 +87,14 @@ public class TaskTemplateLoader implements TemplateLoader {
                     add("id", 1L);
                 }});
 
+    }
+
+    private void addTemplatesTaskWithSpecificTaskStatus() {
+        Fixture.of(Task.class)
+                .addTemplate(TASK_WITH_STATUS_DONE)
+                .inherits(AFTER_INSERT, new Rule() {{
+                    add("taskStatus", one(TaskStatus.class, TaskStatusTemplateLoader.TASK_STATUS_DONE));
+                }});
     }
 
 }

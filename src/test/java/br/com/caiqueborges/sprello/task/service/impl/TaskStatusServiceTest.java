@@ -1,6 +1,6 @@
 package br.com.caiqueborges.sprello.task.service.impl;
 
-import br.com.caiqueborges.sprello.task.exception.TaskNotFoundException;
+import br.com.caiqueborges.sprello.task.exception.TaskStatusNotFoundException;
 import br.com.caiqueborges.sprello.task.fixture.TaskStatusTemplateLoader;
 import br.com.caiqueborges.sprello.task.repository.TaskStatusRepository;
 import br.com.caiqueborges.sprello.task.repository.entity.TaskStatus;
@@ -60,7 +60,7 @@ class TaskStatusServiceTest {
                 .willReturn(Optional.empty());
 
         assertThatThrownBy(() -> service.getTaskStatusToDo())
-                .isInstanceOf(TaskNotFoundException.class);
+                .isInstanceOf(TaskStatusNotFoundException.class);
 
         verify(taskStatusRepository).findById(1L);
 

@@ -7,22 +7,22 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import java.util.Map;
 
 @ResponseStatus(HttpStatus.NOT_FOUND)
-public class TaskNotFoundException extends BaseException {
+public class TaskStatusNotFoundException extends BaseException {
 
-    private final Long taskId;
+    private final Long taskStatusId;
 
-    public TaskNotFoundException(Long taskId) {
-        this.taskId = taskId;
+    public TaskStatusNotFoundException(Long taskStatusId) {
+        this.taskStatusId = taskStatusId;
     }
 
     @Override
     public String getMessageKey() {
-        return "task.notfound";
+        return "taskstatus.notfound";
     }
 
     @Override
     public Map<String, Object> getMessageVariables() {
-        return Map.of("id", taskId);
+        return Map.of("id", taskStatusId);
     }
 
 }
