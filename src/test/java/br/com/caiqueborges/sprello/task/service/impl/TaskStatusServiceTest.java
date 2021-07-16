@@ -66,4 +66,35 @@ class TaskStatusServiceTest {
 
     }
 
+    @Test
+    void whenGetTaskStatusById_thenReturnTaskStatus() {
+
+        final TaskStatus taskStatusDone = loadFixture(TaskStatusTemplateLoader.TASK_STATUS_DONE, TaskStatus.class);
+
+        given(taskStatusRepository.findById(taskStatusDone.getId()))
+                .willReturn(Optional.of(taskStatusDone));
+
+        final TaskStatus taskStatusReturned = service.findTaskStatusById(taskStatusDone.getId());
+
+        assertThat(taskStatusReturned).isEqualTo(taskStatusDone);
+
+        verify(taskStatusRepository).findById(taskStatusDone.getId());
+
+    }
+
+    @Test
+    void whenGetTaskStatusById_andTaskStatusDontExists_thenThrowTaskNotFoundException() {
+
+        final long taskStatusId = 1L;
+
+        given(taskStatusRepository.findById(taskStatusId))
+                .willReturn(Optional.empty());
+
+        assertThatThrownBy(() -> service.findTaskStatusById(taskStatusId))
+                .isInstanceOf(TaskStatusNotFoundException.class);
+
+        verify(taskStatusRepository).findById(taskStatusId);
+
+    }
+
 }

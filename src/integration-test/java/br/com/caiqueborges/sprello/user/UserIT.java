@@ -2,17 +2,13 @@ package br.com.caiqueborges.sprello.user;
 
 import br.com.caiqueborges.sprello.AbstractIT;
 import br.com.caiqueborges.sprello.user.controller.model.CreateUserRequest;
-import br.com.caiqueborges.sprello.user.controller.model.CreateUserResponse;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockHttpServletResponse;
 
 import static br.com.caiqueborges.sprello.util.JsonUnitUtils.jsonIsEqualToFile;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 

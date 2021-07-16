@@ -6,4 +6,5 @@ public interface ReadTaskStatusService {
 
     TaskStatus getTaskStatusToDo();
 
+    TaskStatus findTaskStatusById(Long id);
 }

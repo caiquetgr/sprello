@@ -141,4 +141,38 @@ class TaskServiceTest {
 
     }
 
+    @Tag("update_task_status")
+    @Test
+    void whenUpdateTaskStatus_thenReturnTaskwithUpdatedTaskStatus() {
+
+        final Board board = loadFixture(BoardTemplateLoader.AFTER_INSERT, Board.class);
+        final Task task = loadFixture(TaskTemplateLoader.AFTER_INSERT, Task.class);
+        final TaskStatus taskStatusDone = loadFixture(TaskStatusTemplateLoader.TASK_STATUS_DONE, TaskStatus.class);
+
+        given(readBoardService.getBoardById(board.getId()))
+                .willReturn(board);
+
+        given(taskRepository.findByIdAndBoardIdAndDeletedFalse(task.getId(), board.getId()))
+                .willReturn(Optional.of(task));
+
+        given(readTaskStatusService.findTaskStatusById(taskStatusDone.getId()))
+                .willReturn(taskStatusDone);
+
+        given(taskRepository.save(task))
+                .willAnswer(answer -> answer.getArgument(0));
+
+        final Task returnedTask = taskService.updateTaskStatus(task.getId(), board.getId(), taskStatusDone.getId());
+
+        assertThat(returnedTask)
+                .isEqualToIgnoringGivenFields(task, "taskStatus");
+        assertThat(returnedTask.getTaskStatus())
+                .isEqualTo(taskStatusDone);
+
+        verify(readBoardService).getBoardById(board.getId());
+        verify(taskRepository).findByIdAndBoardIdAndDeletedFalse(task.getId(), board.getId());
+        verify(readTaskStatusService).findTaskStatusById(taskStatusDone.getId());
+        verify(taskRepository).save(task);
+
+    }
+
 }

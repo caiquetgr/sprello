@@ -39,11 +39,11 @@ public class TaskIT extends AuthenticatedIT {
     private static final String INSERT_TASK_1_TODO_SQL = TASK_SQL_RESOURCE + "insert-task-1-todo.sql";
     private static final String INSERT_TASK_1_TODO_DELETED_SQL = TASK_SQL_RESOURCE + "insert-task-1-todo-deleted.sql";
 
-    private static final String UPDATE_TASK_STATUS_1_TODO = TASK_SQL_RESOURCE + "update-task-status-1-todo.json";
-    private static final String UPDATE_TASK_STATUS_2_PROGRESS = TASK_SQL_RESOURCE + "update-task-status-2-progress.json";
-    private static final String UPDATE_TASK_STATUS_3_REVISION = TASK_SQL_RESOURCE + "update-task-status-3-revision.json";
-    private static final String UPDATE_TASK_STATUS_4_DONE = TASK_SQL_RESOURCE + "update-task-status-4-done.json";
-    private static final String UPDATE_TASK_STATUS_5_CANCELLED = TASK_SQL_RESOURCE + "update-task-status-5-cancelled.json";
+    private static final String UPDATE_TASK_STATUS_1_TODO = TASKS_JSON_RESOURCE + "update-task-status-1-todo.json";
+    private static final String UPDATE_TASK_STATUS_2_PROGRESS = TASKS_JSON_RESOURCE + "update-task-status-2-progress.json";
+    private static final String UPDATE_TASK_STATUS_3_REVISION = TASKS_JSON_RESOURCE + "update-task-status-3-revision.json";
+    private static final String UPDATE_TASK_STATUS_4_DONE = TASKS_JSON_RESOURCE + "update-task-status-4-done.json";
+    private static final String UPDATE_TASK_STATUS_5_CANCELLED = TASKS_JSON_RESOURCE + "update-task-status-5-cancelled.json";
 
     @SneakyThrows
     @Sql(scripts = {CREATE_VALID_USER_SQL, INSERT_BOARD_1_SQL})

@@ -21,4 +21,10 @@ class TaskStatusService implements ReadTaskStatusService {
                 .orElseThrow(() -> new TaskStatusNotFoundException(TASK_STATUS_TO_DO_ID));
     }
 
+    @Override
+    public TaskStatus findTaskStatusById(Long id) {
+        return taskStatusRepository.findById(id)
+                .orElseThrow(() -> new TaskStatusNotFoundException(TASK_STATUS_TO_DO_ID));
+    }
+
 }
