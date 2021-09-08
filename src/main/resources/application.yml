@@ -3,7 +3,7 @@ spring:
     hikari:
       connection-timeout: 10000
     url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/sprello}
-    username: ${DATABASE_USERRNAME:sprello_user}
+    username: ${DATABASE_USERNAME:sprello_user}
     password: ${DATABASE_PASSWORD:sprello123}
     driver-class-name: org.postgresql.Driver
   jpa:
@@ -14,6 +14,7 @@ spring:
       hibernate:
         default-schema: public
         dialect: org.hibernate.dialect.PostgreSQLDialect
+    open-in-view: false
   application:
     name: sprello
 server:
