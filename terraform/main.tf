@@ -21,3 +21,5 @@ provider "random" {
 
 }
 
+// TODO: Substituir account number nos scripts
+// TODO: Remover key pair id do cluster

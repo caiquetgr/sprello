@@ -1,6 +1,7 @@
 resource "aws_vpc" "vpc" {
     cidr_block = var.vpc_cidr_block
     enable_dns_hostnames = true
+    enable_dns_support = true
 
     tags = {
       Name = "${var.project_name}-vpc"
@@ -70,24 +71,6 @@ resource "aws_route_table_association" "private_route_table_association" {
   route_table_id = aws_route_table.private_route_table.id
 }
 
-resource "aws_security_group" "db_security_group" {
-  name = "${var.project_name}-db-security-group"
-  description = "Allow DB connection inbound traffic from public subnet"
-  vpc_id = aws_vpc.vpc.id
-
-  ingress {
-    description = "Database port ingress from public subnet"
-    from_port = 5432
-    to_port = 5432
-    protocol = "tcp"
-    cidr_blocks = [aws_subnet.public_subnet.cidr_block]
-  }
-
-  tags = {
-    "Name" = "${var.project_name}-db-security-group"
-  }
-}
-
 resource "aws_security_group" "ecs_security_group" {
   name = "${var.project_name}-ecs-security-group"
   description = "ECS security group"
@@ -98,7 +81,7 @@ resource "aws_security_group" "ecs_security_group" {
     from_port = 80
     to_port = 80
     protocol = "tcp"
-    cidr_blocks = ["179.209.44.115/32"]
+    cidr_blocks = ["${var.my-ip}"]
   }
 
   ingress {
@@ -106,7 +89,7 @@ resource "aws_security_group" "ecs_security_group" {
     from_port = 22
     to_port = 22
     protocol = "tcp"
-    cidr_blocks = ["179.209.44.115/32"]
+    cidr_blocks = ["${var.my-ip}"]
   }
 
   egress {
@@ -119,5 +102,32 @@ resource "aws_security_group" "ecs_security_group" {
 
   tags = {
     "Name" = "${var.project_name}-ecs-security-group"
+  }
+}
+
+
+resource "aws_security_group" "alb_security_group" {
+  name = "${var.project_name}-alb-security-group"
+  description = "ALB security group"
+  vpc_id = aws_vpc.vpc.id
+
+  ingress {
+    description = "Ingress rule"
+    from_port = 80
+    to_port = 80
+    protocol = "tcp"
+    cidr_blocks = ["${var.my-ip}"]
+  }
+
+  egress {
+    description = "Egress rule"
+    from_port = 8080
+    to_port = 8080
+    protocol = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    "Name" = "${var.project_name}-alb-security-group"
   }
 }

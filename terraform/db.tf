@@ -27,6 +27,31 @@ resource "aws_db_subnet_group" "db_subnet_group" {
     subnet_ids = aws_subnet.private_subnet[*].id
 }
 
+resource "aws_security_group" "db_security_group" {
+  name = "${var.project_name}-db-security-group"
+  description = "Allow DB connection inbound traffic from public subnet"
+  vpc_id = aws_vpc.vpc.id
+
+  ingress {
+    description = "Database port ingress from public subnet"
+    from_port = 5432
+    to_port = 5432
+    protocol = "tcp"
+    cidr_blocks = [aws_subnet.public_subnet.cidr_block]
+  }
+
+  ingress {
+      from_port = 0
+      to_port = 0
+      protocol = "-1"
+      self = true
+  }
+
+  tags = {
+    "Name" = "${var.project_name}-db-security-group"
+  }
+}
+
 #################################
 ##########  DATABASE  ###########
 #################################
@@ -53,4 +78,8 @@ resource "aws_db_instance" "db" {
     vpc_security_group_ids = [aws_security_group.db_security_group.id]
 
     skip_final_snapshot = true
+}
+
+output "db_jdbc_connection_string" {
+    value = "jdbc:postgresql://${aws_db_instance.db.endpoint}/${aws_db_instance.db.name}"
 }
